@@ -54,7 +54,7 @@ using iptr = std::intptr_t;
 # error Compiler is currently not supported
 
 #endif // compiler detection
-       
+
 
 // arch size detection
 #define arch_32 0
@@ -64,7 +64,7 @@ using iptr = std::intptr_t;
 # undef arch_64
 # define arch_64 1
 
-#elif INTPTR_MAX == INT32_MAX 
+#elif INTPTR_MAX == INT32_MAX
 # undef arch_32
 # define arch_32 1
 
@@ -72,7 +72,7 @@ using iptr = std::intptr_t;
 # error Currently only support 64 bit and 32 bit architecture
 
 #endif // arch size detection
-       
+
 
 // platform detection
 #define  platform_windows  0
@@ -98,12 +98,13 @@ using iptr = std::intptr_t;
 #if defined (__unix__) || defined (__unix)
 # undef platform_unix
 # define platform_unix 1
-#endif // platform detection; unix 
+#endif // platform detection; unix
 
 #if !(platform_windows || platform_unix || platform_apple || platform_linux)
 # error Platform is not supported
 #endif
 
+// Export macor decaleration
 #if defined(MEXPORT)
 # if compiler_msvc
 #  define MAPI __declspec(dllexport)
@@ -121,3 +122,16 @@ using iptr = std::intptr_t;
 #else
 # define MAPI
 #endif
+
+// sizes macros
+#define kilobytes(value) ((value) * 1024LL)
+#define megabytes(value) (kilobytes(value) * 1024LL)
+#define gigabytes(value) (megabytes(value) * 1024LL)
+
+#define hundred(x)          ((x) * 100LL)
+#define thousand(x)         ((x) * 1000LL)
+#define hundred_thousand(x) ((x) * 100000LL)
+#define million(x)          ((x) * 1000000LL)
+#define billion(x)          ((x) * 1000000000LL)
+
+
