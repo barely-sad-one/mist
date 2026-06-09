@@ -137,15 +137,14 @@ namespace mist
 
   void Arena::popTo(usize target)
   {
-    while (mArena->basePos >= target)
+    while (mArena->prev != nullptr && mArena->basePos >= target)
     {
       ArenaBlock* prev = mArena->prev;
-      assert_trap(prev != nullptr);
       freeBlock(mArena);
       mArena = prev;
     }
 
-    usize newUsed = target - mArena->basePos;
+    usize newUsed = target > mArena->basePos ? target - mArena->basePos : 0;
     assert_trap(newUsed <= mArena->used);
     mArena->used = newUsed;
 
