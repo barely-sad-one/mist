@@ -56,24 +56,6 @@ using iptr = std::intptr_t;
 #endif // compiler detection
 
 
-// arch size detection
-#define arch_32 0
-#define arch_64 0
-
-#if INTPTR_MAX == INT64_MAX
-# undef arch_64
-# define arch_64 1
-
-#elif INTPTR_MAX == INT32_MAX
-# undef arch_32
-# define arch_32 1
-
-#else
-# error Currently only support 64 bit and 32 bit architecture
-
-#endif // arch size detection
-
-
 // platform detection
 #define  platform_windows  0
 #define  platform_apple    0
@@ -135,3 +117,11 @@ using iptr = std::intptr_t;
 #define billion(x)          ((x) * 1000000000LL)
 
 
+// Deleting copy and move construtor
+#define delete_copy_constructor(name) \
+  name(const name&) = delete; \
+  name& operator=(const name&) = delete
+
+#define delete_move_constructor(name) \
+  name(name&&) = delete; \
+  name& operator=(name&&) = delete

@@ -41,9 +41,9 @@ namespace mist
 
 }
 
-#define log_fatal(fmt, ...) application_global.logger.log(mist::LogLevel::fatal, fmt __VA_OPT__(,) __VA_ARGS__)
-#define log_error(fmt, ...) application_global.logger.log(mist::LogLevel::error, fmt __VA_OPT__(,) __VA_ARGS__)
-#define log_warn(fmt, ...)  application_global.logger.log(mist::LogLevel::warn,  fmt __VA_OPT__(,) __VA_ARGS__)
-#define log_info(fmt, ...)  application_global.logger.log(mist::LogLevel::info,  fmt __VA_OPT__(,) __VA_ARGS__)
-#define log_debug(fmt, ...) application_global.logger.log(mist::LogLevel::debug, fmt __VA_OPT__(,) __VA_ARGS__)
-#define log_trace(fmt, ...) application_global.logger.log(mist::LogLevel::trace, fmt __VA_OPT__(,) __VA_ARGS__)
+#define log_fatal(fmt, ...) mist_application.logger.log(mist::LogLevel::fatal, fmt __VA_OPT__(,) __VA_ARGS__)
+#define log_error(fmt, ...) mist_application.logger.log(mist::LogLevel::error, fmt __VA_OPT__(,) __VA_ARGS__)
+#define log_warn(fmt, ...)  mist_application.logger.log(mist::LogLevel::warn,  fmt __VA_OPT__(,) __VA_ARGS__)
+#define log_info(fmt, ...)  mist_application.logger.log(mist::LogLevel::info,  fmt __VA_OPT__(,) __VA_ARGS__)
+#define log_debug(fmt, ...) mist_application.logger.log(mist::LogLevel::debug, fmt __VA_OPT__(,) __VA_ARGS__)
+#define log_trace(fmt, ...) mist_application.logger.log(mist::LogLevel::trace, fmt __VA_OPT__(,) __VA_ARGS__)

@@ -22,12 +22,22 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>)
 add_library(mist SHARED
   src/core/logger.cpp
   src/core/application.cpp
+  src/platform/platform.cpp
+  src/platform/platform_unix.cpp
+  src/platform/platform_linux.cpp
+  src/platform/platform_apple.cpp
+  src/platform/platform_windows.cpp
+  src/memory/memory.cpp
+  src/memory/allocator.cpp
+  src/utils/utils.cpp
+  src/collections/strings.cpp
 )
 
 target_compile_features(mist PUBLIC cxx_std_17)
 
 target_compile_definitions(mist PRIVATE
   MEXPORT
+  MIST_ARENA_FREELIST
   $<$<CONFIG:Debug>:_DEBUG>
 )
 

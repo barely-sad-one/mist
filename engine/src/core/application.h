@@ -1,14 +1,18 @@
 #pragma once
 
 #include "defines.h"
+#include "platform/platform.h"
 #include "core/logger.h"
+#include "memory/memory.h"
 
 namespace mist
 {
 
   struct ApplicationState
   {
+    Platform plat;
     Logger logger;
+    Memory memory;
   };
 
   class Application
@@ -32,4 +36,6 @@ namespace mist
 
 }
 
-#define application_global mist::Application::instance().mAppState
+#define mist_application  mist::Application::instance().mAppState
+#define mist_platform     mist::Application::instance().mAppState.plat
+#define mist_memory       mist::Application::instance().mAppState.memory
