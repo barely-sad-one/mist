@@ -27,6 +27,7 @@ target_compile_features(testbed PRIVATE cxx_std_17)
 
 target_compile_definitions(testbed PRIVATE
   $<$<CONFIG:Debug>:_DEBUG>
+  MIST_ARENA_FREELIST
 )
 
 target_include_directories(testbed
