@@ -35,10 +35,12 @@ add_library(mist SHARED
 
 target_compile_features(mist PUBLIC cxx_std_17)
 
-target_compile_definitions(mist PRIVATE
-  MEXPORT
-  MIST_ARENA_FREELIST
-  $<$<CONFIG:Debug>:_DEBUG>
+target_compile_definitions(mist
+  PRIVATE
+    MEXPORT
+    $<$<CONFIG:Debug>:_DEBUG>
+  PUBLIC
+    MIST_ARENA_FREELIST
 )
 
 target_include_directories(mist
