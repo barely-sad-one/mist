@@ -40,8 +40,8 @@ namespace mist
     String(Arena& arena, StringView str);
 
     char operator[](usize idx) const;
-    bool operator==(String other) const;
-    bool operator!=(String other) const;
+    bool operator==(StringView other) const;
+    bool operator!=(StringView other) const;
 
     const char* data() const;
     usize size() const;
@@ -51,6 +51,9 @@ namespace mist
     bool empty() const;
 
     private:
+      friend struct StringBuilder;
+      String(char* data, usize size) : mData(data), mSize(size) {}
+
       char* mData = nullptr;
       usize mSize = 0;
   };

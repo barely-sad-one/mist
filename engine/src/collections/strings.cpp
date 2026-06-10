@@ -86,13 +86,13 @@ namespace mist
     return mSize == 0;
   }
 
-  bool String::operator==(String other) const
+  bool String::operator==(StringView other) const
   {
-    if (mSize != other.mSize) return false;
-    return Platform::compare(mData, other.mData, mSize) == 0;
+    if (mSize != other.size()) return false;
+    return Platform::compare(mData, other.data(), mSize) == 0;
   }
 
-  bool String::operator!=(String other) const
+  bool String::operator!=(StringView other) const
   {
     return !(*this == other);
   }
@@ -127,9 +127,13 @@ namespace mist
     mData[mSize]   = '\0';
   }
 
-  String StringBuilder::build(Arena& arena)
+  String StringBuilder::build(Arena&)
   {
-    return String(arena, StringView{ mData, mSize });
+    String s(mData, mSize);
+    mData = nullptr;
+    mSize = 0;
+    mCapacity = 0;
+    return s;
   }
 
   StringView StringBuilder::view() const

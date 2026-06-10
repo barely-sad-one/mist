@@ -85,7 +85,7 @@ namespace mist
     {
       if (mCount >= mCapacity)
         grow(arena);
-      mData[mCount++] = val;
+      mData[mCount++] = std::move(val);
     }
 
     T* push(Arena& arena)
