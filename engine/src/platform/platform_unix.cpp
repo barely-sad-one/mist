@@ -3,7 +3,6 @@
 #if platform_linux || platform_unix || platform_apple
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <time.h>
 #include <sys/mman.h>
 
@@ -20,16 +19,6 @@ namespace mist
   void  Platform::free(void* ptr)
   {
     ::free(ptr);
-  }
-
-  void Platform::consoleWrite(const char* msg, u8 color)
-  {
-    fprintf(stdout, "%s\n", msg);
-  }
-
-  void Platform::consoleWriteError(const char* msg, u8 color)
-  {
-    fprintf(stderr, "%s\n", msg);
   }
 
   void Platform::sleep(u64 ms)

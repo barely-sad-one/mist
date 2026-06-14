@@ -1,6 +1,7 @@
 #include "platform/platform.h"
 
 #include <string.h>
+#include <stdio.h>
 
 namespace mist
 {
@@ -42,5 +43,15 @@ namespace mist
   i32 Platform::compare(const void* s1, const void* s2, usize size)
   {
     return memcmp(s1, s2, size);
+  }
+
+  void Platform::consoleWrite(const char* msg)
+  {
+    fprintf(stdout, "%s", msg);
+  }
+
+  void Platform::consoleWriteError(const char* msg)
+  {
+    fprintf(stderr, "%s", msg);
   }
 }

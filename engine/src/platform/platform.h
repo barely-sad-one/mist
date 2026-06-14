@@ -3,6 +3,17 @@
 #include "defines.h"
 #include <stddef.h>
 
+namespace mist::color
+{
+  constexpr const char* Reset   = "\033[0m";
+  constexpr const char* BoldRed = "\033[1;31m";
+  constexpr const char* Red     = "\033[0;31m";
+  constexpr const char* Yellow  = "\033[0;33m";
+  constexpr const char* Green   = "\033[0;32m";
+  constexpr const char* Cyan    = "\033[0;36m";
+  constexpr const char* White   = "\033[0;37m";
+}
+
 namespace mist
 {
 
@@ -42,8 +53,8 @@ namespace mist
       MAPI static void* copy(void* dest, const void* src, usize size);
       MAPI static void* set(void* dest, i32 value, usize size);
       MAPI static i32   compare(const void* s1, const void* s2, usize size);
-      MAPI static void  consoleWrite(const char* msg, u8 color);
-      MAPI static void  consoleWriteError(const char* msg, u8 color);
+      MAPI static void  consoleWrite(const char* msg);
+      MAPI static void  consoleWriteError(const char* msg);
 
       MAPI u64  getTime() const;
       MAPI void sleep(u64 ms);

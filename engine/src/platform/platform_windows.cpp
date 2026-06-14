@@ -17,6 +17,14 @@ namespace mist
     usize frequency;
   };
 
+  static void enableAnsiColors()
+  {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode = 0;
+    GetConsoleMode(hOut, &mode);
+    SetConsoleMode(hOut, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+  }
+
   Platform::Platform()
     : mInternalState(nullptr)
   {
@@ -33,6 +41,8 @@ namespace mist
     mInternalState->frequency = f.QuadPart;
 
     mStartTime = getTime();
+
+    enableAnsiColors();
   }
 
   Platform::~Platform() {
@@ -52,14 +62,6 @@ namespace mist
   void Platform::free(void* ptr)
   {
     _aligned_free(ptr);
-  }
-
-  void Platform::consoleWrite(const char* msg, u8 color)
-  {
-  }
-
-  void Platform::consoleWriteError(const char* msg, u8 color)
-  {
   }
 
   u64 Platform::getTime() const

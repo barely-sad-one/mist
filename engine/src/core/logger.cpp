@@ -1,4 +1,5 @@
 #include "core/logger.h"
+#include "platform/platform.h"
 
 #include <cstdarg>
 #include <cstdio>
@@ -6,7 +7,7 @@
 namespace mist
 {
 
-  static const char* levelPrefix[] = {
+  static constexpr const char* levelPrefix[] = {
     "[FATAL] ",
     "[ERROR] ",
     "[WARN]  ",
@@ -15,43 +16,30 @@ namespace mist
     "[TRACE] ",
   };
 
-#if !platform_windows
-  static const char* levelColor[] = {
-    "\033[1;31m",
-    "\033[0;31m",
-    "\033[0;33m",
-    "\033[0;32m",
-    "\033[0;36m",
-    "\033[0;37m",
+  static constexpr const char* levelColor[] = {
+    color::BoldRed,
+    color::Red,
+    color::Yellow,
+    color::Green,
+    color::Cyan,
+    color::White,
   };
-  static const char* colorReset = "\033[0m";
-#endif
 
   static void defaultSink(LogLevel level, const char* msg)
   {
     u8 idx = static_cast<u8>(level);
+
+    char buf[kilobytes(4)];
+    snprintf(buf, sizeof(buf), "%s%s%s%s\n",
+      levelColor[idx], levelPrefix[idx], msg, color::Reset);
+
     if (idx <= static_cast<u8>(LogLevel::error))
-    {
-#if platform_windows
-      fprintf(stderr, "%s%s\n", levelPrefix[idx], msg);
-#else
-      fprintf(stderr, "%s%s%s%s\n", levelColor[idx], levelPrefix[idx], msg, colorReset);
-#endif
-    } else
-    {
-#if platform_windows
-      fprintf(stdout, "%s%s\n", levelPrefix[idx], msg);
-#else
-      fprintf(stdout, "%s%s%s%s\n", levelColor[idx], levelPrefix[idx], msg, colorReset);
-#endif
-    }
+      Platform::consoleWriteError(buf);
+    else
+      Platform::consoleWrite(buf);
   }
 
-  static void defaultFlush()
-  {
-    fflush(stdout);
-    fflush(stderr);
-  }
+  static void defaultFlush() {}
 
   Logger::Logger() : mSink(defaultSink), mFlush(defaultFlush) {}
 

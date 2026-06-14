@@ -6,8 +6,6 @@
 
 void testbed()
 {
-  mist::Platform::consoleWrite("Hello world", 2);
-
   mist::Arena arena = mist::Arena(megabytes(64));
   f32* ptr = arena.push<f32>(4);
   assert_trap(ptr != nullptr);
@@ -31,4 +29,6 @@ void testbed()
   builder.append(arena, strview);
   mist::String sb = builder.build(arena);
   log_debug("string builder: %s", sb.data());
+
+  log_fatal("hello");
 }
