@@ -7,6 +7,8 @@
 namespace mist
 {
 
+  // Arena
+
   ArenaTemp::ArenaTemp(Arena* arena)
     : mArena(arena), mPos(arena->pos())
   {}
@@ -168,6 +170,116 @@ namespace mist
   ArenaTemp Arena::beginTemp()
   {
     return ArenaTemp(this);
+  }
+
+  // RtAllocator
+
+  RtAllocator::RtAllocator(usize capacity)
+    : mCapacity(capacity),
+      mUsed(0)
+  {
+    assert_trap_msg(capacity > sizeof(BlockHeader), "RtAllocator: capacity is to small to initialize RtAllocator");
+
+    mBase = mist_memory.allocate<u8>(MemoryType::freelist, capacity);
+    assert_trap(mBase != nullptr);
+
+    mFreeHead = reinterpret_cast<BlockHeader*>(mBase);
+    mFreeHead->size = capacity - sizeof(BlockHeader);
+    mFreeHead->next = nullptr;
+  }
+
+  void* RtAllocator::allocate(usize size, Alignment align)
+  {
+    if (size == 0) return nullptr;
+
+    BlockHeader* prev = nullptr;
+    BlockHeader* curr = mFreeHead;
+
+    while (curr != nullptr)
+    {
+      const usize headerEnd = reinterpret_cast<usize>(curr) + sizeof(BlockHeader);
+      const usize rawStart  = headerEnd + sizeof(void*);
+      const usize userStart = alignUp(rawStart, align);
+      const usize padding   = userStart - headerEnd;
+      const usize totalNeed = alignUp(padding + size, static_cast<Alignment>(alignof(BlockHeader)));
+
+      if (curr->size >= totalNeed)
+      {
+        const usize remainder = curr->size - totalNeed;
+        const usize minSplit  = sizeof(BlockHeader) + sizeof(void*);
+
+        if (remainder >= minSplit)
+        {
+          BlockHeader* split = reinterpret_cast<BlockHeader*>(
+              reinterpret_cast<u8*>(curr) + sizeof(BlockHeader) + totalNeed);
+          split->size = remainder - sizeof(BlockHeader);
+          split->next = curr->next;
+
+          if (prev) prev->next = split;
+          else      mFreeHead  = split;
+        }
+        else
+        {
+          if (prev) prev->next = curr->next;
+          else      mFreeHead  = curr->next;
+        }
+
+        curr->size = totalNeed;
+        curr->next = nullptr;
+        mUsed     += sizeof(BlockHeader) + curr->size;
+
+        *reinterpret_cast<BlockHeader**>(userStart - sizeof(void*)) = curr;
+        return reinterpret_cast<void*>(userStart);
+      }
+
+      prev = curr;
+      curr = curr->next;
+    }
+
+    assert_trap_msg(false, "RtAllocator::allocate - out of memory");
+    return nullptr;
+  }
+
+  void RtAllocator::free(void* ptr)
+  {
+    if (!ptr) return;
+
+    BlockHeader* toFree = *reinterpret_cast<BlockHeader**>(static_cast<u8*>(ptr) - sizeof(void*));
+    mUsed -= sizeof(BlockHeader) + toFree->size;
+
+    BlockHeader* prev = nullptr;
+    BlockHeader* curr = mFreeHead;
+    while (curr != nullptr && curr < toFree)
+    {
+      prev = curr;
+      curr = curr->next;
+    }
+
+    toFree->next = curr;
+    if (prev) prev->next = toFree;
+    else      mFreeHead  = toFree;
+
+    if (curr != nullptr &&
+        reinterpret_cast<u8*>(toFree) + sizeof(BlockHeader) + toFree->size == reinterpret_cast<u8*>(curr))
+    {
+      toFree->size += sizeof(BlockHeader) + curr->size;
+      toFree->next  = curr->next;
+    }
+
+    if (prev != nullptr &&
+        reinterpret_cast<u8*>(prev) + sizeof(BlockHeader) + prev->size == reinterpret_cast<u8*>(toFree))
+    {
+      prev->size += sizeof(BlockHeader) + toFree->size;
+      prev->next  = toFree->next;
+    }
+  }
+
+  void RtAllocator::reset()
+  {
+    mFreeHead       = reinterpret_cast<BlockHeader*>(mBase);
+    mFreeHead->size = mCapacity - sizeof(BlockHeader);
+    mFreeHead->next = nullptr;
+    mUsed           = 0;
   }
 
 }

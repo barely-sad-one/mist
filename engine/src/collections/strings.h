@@ -31,6 +31,7 @@ namespace mist
       const char* mData = nullptr;
       usize mSize = 0;
   };
+  static_assert(std::is_trivially_destructible_v<StringView>);
 
   struct MAPI String
   {
@@ -57,6 +58,7 @@ namespace mist
       char* mData = nullptr;
       usize mSize = 0;
   };
+  static_assert(std::is_trivially_destructible_v<String>);
 
 
   struct MAPI StringBuilder
@@ -76,5 +78,6 @@ namespace mist
       usize mSize = 0;
       usize mCapacity = 0;
   };
+  static_assert(std::is_trivially_destructible_v<StringBuilder>);
 
 }

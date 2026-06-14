@@ -6,10 +6,15 @@
 #include <core/application.h>
 #include "platform/platform.h"
 #include "assertions.h"
+
 #include <type_traits>
+#include <array>
 
 namespace mist
 {
+
+  template <typename T, usize N>
+  using FixedArray = std::array<T, N>;
 
   template <typename T>
   struct Array

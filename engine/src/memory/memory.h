@@ -11,6 +11,7 @@ namespace mist
 #define X_MEMORY_TYPE \
     _X_MEMORY_TYPE(unknown) \
     _X_MEMORY_TYPE(arena) \
+    _X_MEMORY_TYPE(freelist) \
     _X_MEMORY_TYPE(platform) \
     _X_MEMORY_TYPE(application) \
     _X_MEMORY_TYPE(renderer)
