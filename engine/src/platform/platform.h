@@ -1,7 +1,7 @@
 #pragma once
 
 #include "defines.h"
-#include <cstddef>
+#include <stddef.h>
 
 namespace mist
 {
@@ -28,7 +28,7 @@ namespace mist
     public:
       u32 mLogicalProcessorCount;
       usize mPageSize;
-      static constexpr usize mArenaLargePageSize = megabytes(4);
+      static constexpr usize mArenaLargePageSize = megabytes(2);
 
       Platform();
       ~Platform();
@@ -44,8 +44,9 @@ namespace mist
       MAPI static i32   compare(const void* s1, const void* s2, usize size);
       MAPI static void  consoleWrite(const char* msg, u8 color);
       MAPI static void  consoleWriteError(const char* msg, u8 color);
-      MAPI static u64   getTime();
-      MAPI static void  sleep(u64 ms);
+
+      MAPI u64  getTime() const;
+      MAPI void sleep(u64 ms);
 
       MAPI static void* reserve(usize size);
       MAPI static void* reserveLarge(usize size);

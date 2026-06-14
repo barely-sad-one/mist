@@ -17,6 +17,8 @@ namespace mist
     mStartTime = getTime();
   }
 
+  Platform::~Platform() {}
+
   u64 Platform::getTime()
   {
     std::timespec now;

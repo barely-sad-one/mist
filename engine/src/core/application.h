@@ -18,8 +18,8 @@ namespace mist
   class Application
   {
     public:
-      Application();
-      ~Application();
+      MAPI Application();
+      MAPI ~Application();
 
       MAPI static Application& instance();
 

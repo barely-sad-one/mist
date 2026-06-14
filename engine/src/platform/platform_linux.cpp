@@ -17,7 +17,9 @@ namespace mist
     mStartTime = getTime();
   }
 
-  u64 Platform::getTime()
+  Platform::~Platform() {}
+
+  u64 Platform::getTime() const
   {
     std::timespec now;
     clock_gettime(CLOCK_MONOTONIC_RAW, &now);

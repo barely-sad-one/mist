@@ -5,16 +5,6 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
 endif()
 
-if(MSVC)
-  set(CMAKE_CXX_FLAGS_DEBUG          "/Od /Zi" CACHE STRING "" FORCE)
-  set(CMAKE_CXX_FLAGS_RELEASE        "/Od"     CACHE STRING "" FORCE)
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Od /Zi" CACHE STRING "" FORCE)
-else()
-  set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g"  CACHE STRING "" FORCE)
-  set(CMAKE_CXX_FLAGS_RELEASE        "-O0"     CACHE STRING "" FORCE)
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O0 -g"  CACHE STRING "" FORCE)
-endif()
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>)
@@ -34,6 +24,47 @@ add_library(mist SHARED
 )
 
 target_compile_features(mist PUBLIC cxx_std_17)
+
+target_compile_options(mist PRIVATE
+  $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:
+    -Wall
+    -Wextra
+    -fvisibility=hidden
+  >
+
+  $<$<CXX_COMPILER_ID:MSVC>:
+    /W4
+    /permissive-
+  >
+
+  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU,Clang,AppleClang>>:
+    -O0 -g
+  >
+  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:GNU,Clang,AppleClang>>:
+    -O3
+  >
+  $<$<AND:$<CONFIG:RelWithDebInfo>,$<CXX_COMPILER_ID:GNU,Clang,AppleClang>>:
+    -O3 -g
+  >
+
+  $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:
+    /Od /Zi
+  >
+  $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:
+    /O2
+  >
+  $<$<AND:$<CONFIG:RelWithDebInfo>,$<CXX_COMPILER_ID:MSVC>>:
+    /O2 /Zi
+  >
+)
+
+find_package(Threads REQUIRED)
+target_link_libraries(mist
+  PUBLIC
+    Threads::Threads
+  PRIVATE
+  $<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<PLATFORM_ID:Linux>>:m>
+)
 
 target_compile_definitions(mist
   PRIVATE
